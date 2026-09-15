@@ -1,0 +1,74 @@
+# Deploy otomatis ke GitHub Pages.
+#
+# Cara pakai:
+# 1. Push repositori ini ke GitHub (branch main atau master).
+# 2. Buka Settings > Pages > Build and deployment,
+#    pilih Source: "GitHub Actions" (bukan "Deploy from a branch").
+# 3. Workflow ini akan build & publish otomatis setiap push.
+#
+# Base path dihitung otomatis:
+# - Repo biasa (mis. landing-page-mekar-umha) -> /landing-page-mekar-umha
+# - Repo user.github.io -> tanpa base path (root)
+
+name: Deploy ke GitHub Pages
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Pasang Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependensi
+        run: bun install --frozen-lockfile
+
+      - name: Hitung base path otomatis
+        id: basepath
+        run: |
+          REPO_NAME="${GITHUB_REPOSITORY#*/}"
+          OWNER="${GITHUB_REPOSITORY_OWNER}"
+          if [[ "${REPO_NAME}" == "${OWNER}.github.io" ]]; then
+            echo "path=" >> "$GITHUB_OUTPUT"
+            echo "Menggunakan root (repo ${OWNER}.github.io)"
+          else
+            echo "path=/${REPO_NAME}" >> "$GITHUB_OUTPUT"
+            echo "Menggunakan base path /${REPO_NAME}"
+          fi
+
+      - name: Build situs statis
+        run: bun run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: ${{ steps.basepath.outputs.path }}
+
+      - name: Siapkan artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy ke GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

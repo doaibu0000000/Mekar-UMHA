@@ -1,0 +1,65 @@
+# ============================================================
+# .gitignore — Landing Page Mekar UMHA Surantaka
+# Repositori bersih: hanya kode sumber & aset yang di-commit.
+# ============================================================
+
+# Dependensi
+node_modules
+/.pnp
+.pnp.*
+.pnp-js
+
+# Build & cache
+/.next/
+/out/
+/build
+*.tsbuildinfo
+next-env.d.ts
+.cache
+
+# Environment & rahasia — JANGAN pernah di-commit
+.env
+.env.*
+!.env.example
+
+# Log
+*.log
+dev.log
+server.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Testing & coverage
+/coverage
+
+# Sistem operasi
+.DS_Store
+Thumbs.db
+*.pem
+
+# Vercel
+.vercel
+
+# Editor & AI tooling lokal
+.vscode/
+.idea/
+.claude
+.z-ai-config
+*.swp
+
+# ---- Artefak sandbox development (tidak relevan untuk publik) ----
+/.zscripts/
+/Caddyfile
+/prisma/
+/db/
+/examples/
+/mini-services/
+/tests/
+/upload/
+/download/
+/scripts/
+/skills/
+worklog.md
+prompt
