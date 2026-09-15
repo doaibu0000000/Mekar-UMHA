@@ -2,7 +2,7 @@ import { MessageCircle } from "lucide-react";
 import { Img } from "@/components/landing/img";
 import { Reveal } from "@/components/landing/reveal";
 import { SectionHeader } from "@/components/landing/section-header";
-import { menu, orderMessage } from "@/lib/site";
+import { menu, orderMessage, waLink } from "@/lib/site";
 
 export function MenuSection() {
   return (
@@ -59,7 +59,7 @@ export function MenuSection() {
                       ) : null}
                     </p>
                     <a
-                      href={orderMessage(item.name, item.price)}
+                      href={waLink(orderMessage(item.name, item.price))}
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={`Pesan ${item.name} lewat WhatsApp`}
